@@ -3,7 +3,6 @@ const wdk = require('wikidata-sdk')
 const rp = require('request-promise');
 const { MongoClient } = require('mongodb');
 
-
 const getCityInfo = async (cityName) => {
 	// Connect to database
 	// const db = await MongoClient.connect(process.env.MLAB_URL);
@@ -11,10 +10,11 @@ const getCityInfo = async (cityName) => {
 	// Request cityName information and country
 	const authorQid = 'Q535'
 	const sparql = `
-		SELECT ?item ?label ?population ?area WHERE {
+		SELECT ?item ?label ?population ?area ?country ?countryLabel WHERE {
 		  ?item wdt:P31 wd:Q515.
 		  ?item rdfs:label ?label.
 		  ?item wdt:P1082 ?population.
+		  ?item wdt:P17 ?country.
 		  ?item wdt:P2046 ?area.
 		  FILTER CONTAINS(LCASE(?label), "${cityName.toLowerCase()}").
 		  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
@@ -59,7 +59,7 @@ function exportCitiesInfo(cities_list) {
 	return citiesDescriptions;
 }
 
-var cities = ["Barcelona", 'Liège', 'Aachen']
+var cities = ["Trondheim"]
 cities_dict = exportCitiesInfo(cities);
 
 
